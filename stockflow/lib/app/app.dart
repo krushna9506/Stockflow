@@ -22,6 +22,17 @@ class StockFlowApp extends ConsumerWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       routerConfig: router,
+      builder: (context, child) {
+        final mediaQueryData = MediaQuery.of(context);
+        final constrainedTextScaler = mediaQueryData.textScaler.clamp(
+          minScaleFactor: 0.85,
+          maxScaleFactor: 1.25,
+        );
+        return MediaQuery(
+          data: mediaQueryData.copyWith(textScaler: constrainedTextScaler),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

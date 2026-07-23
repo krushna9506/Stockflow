@@ -24,18 +24,25 @@ class HomeShell extends ConsumerWidget {
     ref.watch(syncManagerProvider);
 
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          child,
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
-            right: 14,
-            child: const ConnectivityBanner(),
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4, right: 12, bottom: 2),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: const ConnectivityBanner(),
+              ),
+            ),
           ),
+          Expanded(child: child),
         ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
+        height: 62,
+        labelBehavior: NavigationBarLabelBehavior.alwaysShow,
         onDestinationSelected: (index) {
           switch (index) {
             case 0:
@@ -54,24 +61,24 @@ class HomeShell extends ConsumerWidget {
         },
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.point_of_sale_outlined),
-            selectedIcon: Icon(Icons.point_of_sale),
-            label: 'POS / Billing',
+            icon: Icon(Icons.point_of_sale_outlined, size: 22),
+            selectedIcon: Icon(Icons.point_of_sale, size: 22),
+            label: 'POS',
           ),
           NavigationDestination(
-            icon: Icon(Icons.inventory_2_outlined),
-            selectedIcon: Icon(Icons.inventory_2),
-            label: 'Stock & Items',
+            icon: Icon(Icons.inventory_2_outlined, size: 22),
+            selectedIcon: Icon(Icons.inventory_2, size: 22),
+            label: 'Stock',
           ),
           NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            selectedIcon: Icon(Icons.analytics),
-            label: 'Smart Analytics',
+            icon: Icon(Icons.analytics_outlined, size: 22),
+            selectedIcon: Icon(Icons.analytics, size: 22),
+            label: 'Analytics',
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Profile & Settings',
+            icon: Icon(Icons.settings_outlined, size: 22),
+            selectedIcon: Icon(Icons.settings, size: 22),
+            label: 'Settings',
           ),
         ],
       ),

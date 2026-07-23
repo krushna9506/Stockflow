@@ -9,9 +9,15 @@ class BusinessDao extends DatabaseAccessor<AppDatabase>
     with _$BusinessDaoMixin {
   BusinessDao(super.db);
 
-  Future<BusinessesData?> getActiveBusiness() =>
-      (select(businesses)..where((t) => t.isActive.equals(true)))
-          .getSingleOrNull();
+  Future<BusinessesData?> getActiveBusiness() async {
+    final active = await (select(businesses)..where((t) => t.isActive.equals(true))).getSingleOrNull();
+    if (active != null) return active;
+    final first = await (select(businesses)..limit(1)).getSingleOrNull();
+    if (first != null) {
+      await updateBusiness(first.toCompanion(true).copyWith(isActive: const Value(true)));
+    }
+    return first;
+  }
 
   Future<List<BusinessesData>> getAllBusinesses() => select(businesses).get();
 

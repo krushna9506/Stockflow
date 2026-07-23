@@ -81,6 +81,7 @@ class BusinessRepository {
         address: Value(address),
         logoPath: Value(logoPath),
         businessType: Value(businessType),
+        isActive: const Value(true),
       ),
     );
     await _db.enqueueSync(
