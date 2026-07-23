@@ -42,7 +42,7 @@ class HomeShell extends ConsumerWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         height: 62,
-        labelBehavior: NavigationBarLabelBehavior.alwaysShow,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         onDestinationSelected: (index) {
           switch (index) {
             case 0:
