@@ -20,57 +20,67 @@ class ConnectivityBanner extends ConsumerWidget {
 
     switch (status) {
       case ConnectivityStatus.online:
-        bgColor = Colors.green.shade700;
+        bgColor = Colors.green.shade800;
         textColor = Colors.white;
-        message = '🟢 Cloud Connected • Live Sync Active';
-        icon = Icons.cloud_done_outlined;
+        message = 'Cloud Connected';
+        icon = Icons.cloud_done;
         break;
       case ConnectivityStatus.offline:
-        bgColor = cs.errorContainer;
-        textColor = cs.onErrorContainer;
-        message = '🔴 Offline Mode • Changes saved locally on device';
-        icon = Icons.cloud_off_outlined;
+        bgColor = Colors.amber.shade900;
+        textColor = Colors.white;
+        message = 'Offline Mode';
+        icon = Icons.cloud_off;
         break;
       case ConnectivityStatus.syncing:
-        bgColor = cs.primaryContainer;
-        textColor = cs.onPrimaryContainer;
-        message = '🔄 Syncing with Cloud... (${syncProgress.syncedItems}/${syncProgress.totalItems})';
+        bgColor = cs.primary;
+        textColor = cs.onPrimary;
+        message = 'Syncing (${syncProgress.syncedItems}/${syncProgress.totalItems})';
         icon = Icons.sync;
         showProgress = true;
         break;
     }
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: double.infinity,
-      color: bgColor,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (showProgress)
-              SizedBox(
-                width: 14,
-                height: 14,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: textColor,
-                ),
-              )
-            else
-              Icon(icon, size: 16, color: textColor),
-            const SizedBox(width: 8),
-            Text(
-              message,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Center(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (showProgress)
+                SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
                     color: textColor,
-                    fontWeight: FontWeight.w600,
                   ),
-            ),
-          ],
+                )
+              else
+                Icon(icon, size: 14, color: textColor),
+              const SizedBox(width: 6),
+              Text(
+                message,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );

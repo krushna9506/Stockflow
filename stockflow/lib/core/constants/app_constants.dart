@@ -1,6 +1,6 @@
 class AppConstants {
   static const String appName = 'StockFlow';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '1.1.0';
 
   // SharedPreferences Keys
   static const String keyBusinessId = 'business_id';

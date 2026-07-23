@@ -167,14 +167,51 @@ class ProfileScreen extends ConsumerWidget {
 
               const SizedBox(height: 20),
 
-              // Version
+              // Version & License Branding
               Center(
-                child: Text(
-                  'StockFlow POS & Inventory v${AppConstants.appVersion}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: cs.onSurfaceVariant),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.4)),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.verified_user_outlined, size: 16, color: cs.primary),
+                          const SizedBox(width: 8),
+                          Text(
+                            'StockFlow v1.1.0 • Licensed Software',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: cs.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Developed & Powered by Krushna',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'All Rights Reserved • Authorized Business Edition',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
