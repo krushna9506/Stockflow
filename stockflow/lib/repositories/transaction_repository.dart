@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/app_database.dart';
 import '../providers/database_provider.dart';
@@ -31,8 +32,10 @@ class TransactionRepository {
               productId: productId,
               type: type,
               quantity: quantity,
-              unitPrice: unitPrice,
-              totalAmount: totalAmount,
+              quantityBefore: item['quantity_before'] as int? ?? 0,
+              quantityAfter: item['quantity_after'] as int? ?? quantity,
+              unitPrice: Value(unitPrice),
+              totalAmount: Value(totalAmount),
               createdAt: Value(createdAt),
             ),
           );

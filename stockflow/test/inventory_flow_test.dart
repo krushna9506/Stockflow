@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stockflow/core/network/api_client.dart';
 import 'package:drift/native.dart';
 import 'package:stockflow/database/app_database.dart';
 import 'package:stockflow/repositories/business_repository.dart';
@@ -39,7 +40,7 @@ void main() {
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
-    businessRepo = BusinessRepository(db, FakeBusinessApiService());
+    businessRepo = BusinessRepository(db, FakeBusinessApiService(), ApiClient());
     categoryRepo = CategoryRepository(db, FakeCategoryApiService());
     productRepo = ProductRepository(db, FakeProductApiService());
     transactionRepo = TransactionRepository(db, FakeTransactionApiService());
