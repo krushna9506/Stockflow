@@ -10,10 +10,40 @@ class TransactionRepository {
 
   Future<void> syncFromServer(int businessId) async {
     try {
-      await _api.getTransactions(businessId);
-      // Process remote transactions and merge them into local database
+      final remoteList = await _api.getTransactions(businessId);
+      final existing = await _db.transactionDao.getTransactionsForBusiness(businessId, limit: 1000);
+      for (final item in remoteList) {
+        final id = item['id'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+        final productId = item['product_id'] as int? ?? (item['productId'] as int? ?? 0);
+        final typeStr = item['type'] as String? ?? 'sale';
+        final type = TransactionType.values.firstWhere(
+          (e) => e.name.toLowerCase() == typeStr.toLowerCase(),
+          orElse: () => TransactionType.sale,
+        );
+        final quantity = item['quantity'] as int? ?? 1;
+        final unitPrice = (item['unit_price'] as num?)?.toDouble() ?? 0.0;
+        final totalPrice = (item['total_price'] as num?)?.toDouble() ?? (quantity * unitPrice);
+        final timestampStr = item['timestamp'] as String? ?? item['created_at'] as String?;
+        final timestamp = timestampStr != null ? DateTime.tryParse(timestampStr) ?? DateTime.now() : DateTime.now();
+
+        final localTx = existing.where((t) => t.id == id).firstOrNull;
+        if (localTx == null) {
+          await _db.transactionDao.insertTransaction(
+            TransactionsCompanion.insert(
+              id: Value(id),
+              businessId: businessId,
+              productId: productId,
+              type: type,
+              quantity: quantity,
+              unitPrice: unitPrice,
+              totalPrice: totalPrice,
+              timestamp: Value(timestamp),
+            ),
+          );
+        }
+      }
     } catch (e) {
-      // If offline, just ignore and use local data
+      // Offline fallback
     }
   }
 

@@ -11,10 +11,40 @@ class CategoryRepository {
 
   Future<void> syncFromServer(int businessId) async {
     try {
-      await _api.getCategories(businessId);
-      // Process remote categories and merge them into local database
+      final remoteList = await _api.getCategories(businessId);
+      final existing = await _db.categoryDao.getCategoriesForBusiness(businessId);
+      for (final item in remoteList) {
+        final id = item['id'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+        final name = item['name'] as String? ?? 'General';
+        final color = item['color'] as String? ?? '#2196F3';
+        final icon = item['icon'] as String? ?? 'category';
+        final description = item['description'] as String?;
+
+        final localCat = existing.where((c) => c.id == id || c.name == name).firstOrNull;
+        if (localCat == null) {
+          await _db.categoryDao.insertCategory(
+            CategoriesCompanion.insert(
+              id: Value(id),
+              businessId: businessId,
+              name: name,
+              color: Value(color),
+              icon: Value(icon),
+              description: Value(description),
+            ),
+          );
+        } else {
+          await _db.categoryDao.updateCategory(
+            localCat.toCompanion(true).copyWith(
+                  name: Value(name),
+                  color: Value(color),
+                  icon: Value(icon),
+                  description: Value(description),
+                ),
+          );
+        }
+      }
     } catch (e) {
-      // If offline, just ignore and use local data
+      // Offline fallback
     }
   }
 

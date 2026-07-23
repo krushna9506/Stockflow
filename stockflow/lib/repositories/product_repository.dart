@@ -12,10 +12,52 @@ class ProductRepository {
 
   Future<void> syncFromServer(int businessId) async {
     try {
-      await _api.getProducts(businessId);
-      // Process remote products and merge them into local database
+      final remoteList = await _api.getProducts(businessId);
+      final existing = await _db.productDao.getProductsForBusiness(businessId);
+      for (final item in remoteList) {
+        final id = item['id'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+        final name = item['name'] as String? ?? 'Product';
+        final categoryId = item['category_id'] as int?;
+        final purchasePrice = (item['purchase_price'] as num?)?.toDouble() ?? 0.0;
+        final sellingPrice = (item['selling_price'] as num?)?.toDouble() ?? 0.0;
+        final currentQuantity = item['current_quantity'] as int? ?? (item['quantity'] as int? ?? 0);
+        final minimumStock = item['minimum_stock'] as int? ?? 5;
+        final imagePath = item['image_path'] as String?;
+        final sku = item['sku'] as String?;
+
+        final localProd = existing.where((p) => p.id == id || p.name == name).firstOrNull;
+        if (localProd == null) {
+          await _db.productDao.insertProduct(
+            ProductsCompanion.insert(
+              id: Value(id),
+              businessId: businessId,
+              name: name,
+              categoryId: Value(categoryId),
+              purchasePrice: Value(purchasePrice),
+              sellingPrice: Value(sellingPrice),
+              currentQuantity: Value(currentQuantity),
+              minimumStock: Value(minimumStock),
+              imagePath: Value(imagePath),
+              sku: Value(sku),
+            ),
+          );
+        } else {
+          await _db.productDao.updateProduct(
+            localProd.toCompanion(true).copyWith(
+                  name: Value(name),
+                  categoryId: Value(categoryId),
+                  purchasePrice: Value(purchasePrice),
+                  sellingPrice: Value(sellingPrice),
+                  currentQuantity: Value(currentQuantity),
+                  minimumStock: Value(minimumStock),
+                  imagePath: Value(imagePath),
+                  sku: Value(sku),
+                ),
+          );
+        }
+      }
     } catch (e) {
-      // If offline, just ignore and use local data
+      // Offline fallback
     }
   }
 
