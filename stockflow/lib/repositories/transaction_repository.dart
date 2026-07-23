@@ -15,16 +15,12 @@ class TransactionRepository {
       for (final item in remoteList) {
         final id = item['id'] as int? ?? DateTime.now().millisecondsSinceEpoch;
         final productId = item['product_id'] as int? ?? (item['productId'] as int? ?? 0);
-        final typeStr = item['type'] as String? ?? 'sale';
-        final type = TransactionType.values.firstWhere(
-          (e) => e.name.toLowerCase() == typeStr.toLowerCase(),
-          orElse: () => TransactionType.sale,
-        );
+        final type = (item['type'] as String? ?? 'SALE').toUpperCase();
         final quantity = item['quantity'] as int? ?? 1;
         final unitPrice = (item['unit_price'] as num?)?.toDouble() ?? 0.0;
-        final totalPrice = (item['total_price'] as num?)?.toDouble() ?? (quantity * unitPrice);
+        final totalAmount = (item['total_amount'] as num?)?.toDouble() ?? (item['total_price'] as num?)?.toDouble() ?? (quantity * unitPrice);
         final timestampStr = item['timestamp'] as String? ?? item['created_at'] as String?;
-        final timestamp = timestampStr != null ? DateTime.tryParse(timestampStr) ?? DateTime.now() : DateTime.now();
+        final createdAt = timestampStr != null ? DateTime.tryParse(timestampStr) ?? DateTime.now() : DateTime.now();
 
         final localTx = existing.where((t) => t.id == id).firstOrNull;
         if (localTx == null) {
@@ -36,8 +32,8 @@ class TransactionRepository {
               type: type,
               quantity: quantity,
               unitPrice: unitPrice,
-              totalPrice: totalPrice,
-              timestamp: Value(timestamp),
+              totalAmount: totalAmount,
+              createdAt: Value(createdAt),
             ),
           );
         }
