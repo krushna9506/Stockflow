@@ -24,51 +24,54 @@ class HomeShell extends ConsumerWidget {
     ref.watch(syncManagerProvider);
 
     return Scaffold(
-      body: child,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
+      body: Stack(
         children: [
-          const ConnectivityBanner(),
-          NavigationBar(
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (index) {
-              switch (index) {
-                case 0:
-                  context.go('/sell');
-                  break;
-                case 1:
-                  context.go('/stock');
-                  break;
-                case 2:
-                  context.go('/dashboard');
-                  break;
-                case 3:
-                  context.go('/profile');
-                  break;
-              }
-            },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.point_of_sale_outlined),
-                selectedIcon: Icon(Icons.point_of_sale),
-                label: 'POS / Billing',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.inventory_2_outlined),
-                selectedIcon: Icon(Icons.inventory_2),
-                label: 'Stock & Items',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.analytics_outlined),
-                selectedIcon: Icon(Icons.analytics),
-                label: 'Smart Analytics',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: 'Profile & Settings',
-              ),
-            ],
+          child,
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            right: 14,
+            child: const ConnectivityBanner(),
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          switch (index) {
+            case 0:
+              context.go('/sell');
+              break;
+            case 1:
+              context.go('/stock');
+              break;
+            case 2:
+              context.go('/dashboard');
+              break;
+            case 3:
+              context.go('/profile');
+              break;
+          }
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.point_of_sale_outlined),
+            selectedIcon: Icon(Icons.point_of_sale),
+            label: 'POS / Billing',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.inventory_2_outlined),
+            selectedIcon: Icon(Icons.inventory_2),
+            label: 'Stock & Items',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.analytics_outlined),
+            selectedIcon: Icon(Icons.analytics),
+            label: 'Smart Analytics',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Profile & Settings',
           ),
         ],
       ),

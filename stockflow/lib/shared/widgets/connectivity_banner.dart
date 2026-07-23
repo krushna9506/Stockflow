@@ -13,75 +13,72 @@ class ConnectivityBanner extends ConsumerWidget {
 
     final cs = Theme.of(context).colorScheme;
     Color bgColor;
+    Color borderColor;
+    Color dotColor;
     Color textColor;
-    String message;
-    IconData icon;
-    bool showProgress = false;
+    String label;
 
     switch (status) {
       case ConnectivityStatus.online:
-        bgColor = Colors.green.shade800;
-        textColor = Colors.white;
-        message = 'Cloud Connected';
-        icon = Icons.cloud_done;
+        bgColor = const Color(0xFFE6F4EA);
+        borderColor = const Color(0xFFCEEAD6);
+        dotColor = const Color(0xFF137333);
+        textColor = const Color(0xFF137333);
+        label = 'ONLINE';
         break;
       case ConnectivityStatus.offline:
-        bgColor = Colors.amber.shade900;
-        textColor = Colors.white;
-        message = 'Offline Mode';
-        icon = Icons.cloud_off;
+        bgColor = const Color(0xFFFCE8E6);
+        borderColor = const Color(0xFFFAD2CF);
+        dotColor = const Color(0xFFC5221F);
+        textColor = const Color(0xFFC5221F);
+        label = 'OFFLINE';
         break;
       case ConnectivityStatus.syncing:
-        bgColor = cs.primary;
-        textColor = cs.onPrimary;
-        message = 'Syncing (${syncProgress.syncedItems}/${syncProgress.totalItems})';
-        icon = Icons.sync;
-        showProgress = true;
+        bgColor = const Color(0xFFE8F0FE);
+        borderColor = const Color(0xFFD2E3FC);
+        dotColor = const Color(0xFF1A73E8);
+        textColor = const Color(0xFF1A73E8);
+        label = 'SYNCING';
         break;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Center(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (showProgress)
-                SizedBox(
-                  width: 12,
-                  height: 12,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: textColor,
-                  ),
-                )
-              else
-                Icon(icon, size: 14, color: textColor),
-              const SizedBox(width: 6),
-              Text(
-                message,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ],
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: dotColor,
+              shape: BoxShape.circle,
+            ),
           ),
-        ),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: textColor,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
       ),
     );
   }
