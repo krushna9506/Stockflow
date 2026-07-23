@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.stockflow.stockflow"
-        minSdk = flutter.minSdkVersion
+        minSdk = flutter.minSdkVersion // Supports Android 5.0, 7.0+, 8, 9, 10, 11, 12, 13, 14, 15+
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
