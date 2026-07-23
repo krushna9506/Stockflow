@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/local_image_renderer.dart';
@@ -213,20 +214,20 @@ class ProfileScreen extends ConsumerWidget {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any,
         allowMultiple: false,
+        withData: true,
       );
 
-      if (result != null && result.files.single.path != null) {
-        final filePath = result.files.single.path!;
-        final file = File(filePath);
-        if (await file.exists()) {
-          final content = await file.readAsString();
+      if (result != null && result.files.isNotEmpty) {
+        final fileBytes = result.files.first.bytes;
+        if (fileBytes != null) {
+          final content = utf8.decode(fileBytes);
           final count = await ref.read(backupServiceProvider).importFromCsv(content, 1);
           if (count > 0) {
             notification.showSuccess('Successfully imported $count products from CSV Excel!');
-          } else {
-            notification.showError('No valid products found in selected file.');
+            return;
           }
         }
+        notification.showError('No valid products found in selected file.');
       }
     } catch (e) {
       notification.showError('Restore failed: $e');
