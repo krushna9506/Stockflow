@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../../../../shared/widgets/connectivity_banner.dart';
 import '../../../../core/widgets/local_image_renderer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
