@@ -1,0 +1,73 @@
+name: stockflow
+description: StockFlow – Offline-first Inventory Management System
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Navigation
+  go_router: ^15.1.1
+
+  # Database
+  drift: ^2.22.1
+  drift_flutter: ^0.2.4
+  sqlite3_flutter_libs: ^0.5.29
+
+  # Storage & File
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  shared_preferences: ^2.3.3
+  flutter_secure_storage: ^9.2.4
+
+  # Networking
+  dio: ^5.7.0
+  connectivity_plus: ^6.1.1
+  internet_connection_checker_plus: ^2.7.1
+
+  # Image
+  image_picker: ^1.1.2
+  cached_network_image: ^3.4.1
+
+  # Notifications
+  flutter_local_notifications: ^18.0.1
+  permission_handler: ^11.3.1
+
+  # Utils
+  uuid: ^4.5.1
+  intl: ^0.20.2
+  equatable: ^2.0.7
+  logger: ^2.5.0
+  crypto: ^3.0.6
+  open_file: ^3.5.10
+
+  # Icons
+  cupertino_icons: ^1.0.8
+  url_launcher: ^6.3.2
+  package_info_plus: ^9.0.1
+  file_picker: ^11.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Code generation
+  build_runner: ^2.4.15
+  drift_dev: ^2.22.1
+  riverpod_generator: ^2.6.1
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
