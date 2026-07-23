@@ -4,6 +4,8 @@ import '../core/theme/app_theme.dart';
 import '../providers/app_providers.dart';
 import 'router.dart';
 
+import '../core/errors/error_handler.dart';
+
 class StockFlowApp extends ConsumerWidget {
   const StockFlowApp({super.key});
 
@@ -13,6 +15,7 @@ class StockFlowApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
+      scaffoldMessengerKey: ErrorHandler.scaffoldMessengerKey,
       title: 'StockFlow',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,

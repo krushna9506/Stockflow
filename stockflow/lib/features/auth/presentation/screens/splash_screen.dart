@@ -53,12 +53,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final businessId = prefs.getInt(AppConstants.keyBusinessId) ?? -1;
     final setupDone = prefs.getBool(AppConstants.keyBusinessSetupDone) ?? false;
 
-    if (authState.isAuthenticated) {
-      if (businessId != -1 && setupDone) {
-        context.go('/sell');
-      } else {
-        context.go('/business-setup');
-      }
+    if (setupDone && businessId != -1) {
+      context.go('/sell');
+    } else if (authState.isAuthenticated) {
+      context.go('/business-setup');
     } else {
       context.go('/welcome');
     }

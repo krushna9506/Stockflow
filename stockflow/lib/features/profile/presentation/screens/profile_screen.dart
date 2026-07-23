@@ -9,6 +9,7 @@ import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/update_service.dart';
 import '../../../../providers/app_providers.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../../../shared/widgets/update_dialog.dart';
 import '../../../dashboard/presentation/providers/dashboard_providers.dart';
 
@@ -195,11 +196,11 @@ class ProfileScreen extends ConsumerWidget {
   Future<void> _backup(BuildContext context, WidgetRef ref) async {
     final notification = ref.read(notificationServiceProvider);
     try {
-      final backupPath = await ref.read(backupServiceProvider).createBackup();
+      final backupPath = await ref.read(backupServiceProvider).exportToCsv(1);
       if (backupPath != null) {
-        notification.showSuccess('Backup saved to $backupPath');
+        notification.showSuccess('Inventory CSV Excel backup saved to $backupPath');
       } else {
-        notification.showError('Failed to create backup.');
+        notification.showError('Failed to create CSV Excel backup.');
       }
     } catch (e) {
       notification.showError('Backup error: $e');
@@ -210,41 +211,20 @@ class ProfileScreen extends ConsumerWidget {
     final notification = ref.read(notificationServiceProvider);
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.any, // Android/iOS restrict mime types for SQLite sometimes
+        type: FileType.any,
         allowMultiple: false,
       );
 
       if (result != null && result.files.single.path != null) {
         final filePath = result.files.single.path!;
-        if (!filePath.endsWith('.sqlite') && !filePath.endsWith('.db')) {
-          notification.showError('Invalid file type. Please select a .sqlite or .db file.');
-          return;
-        }
-
-        if (context.mounted) {
-          final confirmed = await showDialog<bool>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Confirm Restore'),
-              content: const Text(
-                  'WARNING: This will completely replace your current database and restart the app. Are you sure?'),
-              actions: [
-                TextButton(onPressed: () => ctx.pop(false), child: const Text('Cancel')),
-                FilledButton(onPressed: () => ctx.pop(true), child: const Text('Restore & Restart')),
-              ],
-            ),
-          );
-
-          if (confirmed == true) {
-            await ref.read(backupServiceProvider).restoreBackup(filePath);
-            // After successful restore, we might want to restart the app or force a refresh.
-            // For now, inform the user they should restart manually if automatic reload isn't working
-            notification.showSuccess('Restore successful! Please restart the app.');
-            // Go to welcome page to reset state
-            if (context.mounted) {
-              ref.read(activeBusinessIdProvider.notifier).state = -1;
-              context.go('/welcome');
-            }
+        final file = File(filePath);
+        if (await file.exists()) {
+          final content = await file.readAsString();
+          final count = await ref.read(backupServiceProvider).importFromCsv(content, 1);
+          if (count > 0) {
+            notification.showSuccess('Successfully imported $count products from CSV Excel!');
+          } else {
+            notification.showError('No valid products found in selected file.');
           }
         }
       }
@@ -259,7 +239,7 @@ class ProfileScreen extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         title: const Text('Sign Out?'),
         content: const Text(
-            'Your local data will be preserved. You can re-open the app without signing in.'),
+            'Are you sure you want to sign out of your StockFlow account? You will need to sign in again to access cloud sync.'),
         actions: [
           TextButton(
               onPressed: () => ctx.pop(false), child: const Text('Cancel')),
@@ -272,6 +252,7 @@ class ProfileScreen extends ConsumerWidget {
     );
 
     if (confirmed == true) {
+      await ref.read(authServiceProvider.notifier).logout();
       final prefs = ref.read(sharedPreferencesProvider);
       await prefs.remove(AppConstants.keyBusinessId);
       await prefs.remove(AppConstants.keyBusinessSetupDone);

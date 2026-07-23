@@ -11,10 +11,6 @@ class ConnectivityBanner extends ConsumerWidget {
     final status = ref.watch(connectivityProvider);
     final syncProgress = ref.watch(syncProgressProvider);
 
-    if (status == ConnectivityStatus.online) {
-      return const SizedBox.shrink(); // Hide when online and not syncing
-    }
-
     final cs = Theme.of(context).colorScheme;
     Color bgColor;
     Color textColor;
@@ -23,21 +19,25 @@ class ConnectivityBanner extends ConsumerWidget {
     bool showProgress = false;
 
     switch (status) {
+      case ConnectivityStatus.online:
+        bgColor = Colors.green.shade700;
+        textColor = Colors.white;
+        message = '🟢 Cloud Connected • Live Sync Active';
+        icon = Icons.cloud_done_outlined;
+        break;
       case ConnectivityStatus.offline:
         bgColor = cs.errorContainer;
         textColor = cs.onErrorContainer;
-        message = 'You are offline. Changes are saved locally.';
+        message = '🔴 Offline Mode • Changes saved locally on device';
         icon = Icons.cloud_off_outlined;
         break;
       case ConnectivityStatus.syncing:
         bgColor = cs.primaryContainer;
         textColor = cs.onPrimaryContainer;
-        message = 'Syncing... (${syncProgress.syncedItems}/${syncProgress.totalItems})';
+        message = '🔄 Syncing with Cloud... (${syncProgress.syncedItems}/${syncProgress.totalItems})';
         icon = Icons.sync;
         showProgress = true;
         break;
-      default:
-        return const SizedBox.shrink();
     }
 
     return AnimatedContainer(
