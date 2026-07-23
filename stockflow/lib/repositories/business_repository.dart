@@ -28,7 +28,7 @@ class BusinessRepository {
         var localB = existingList.where((b) => b.id == id || b.name == name).firstOrNull;
 
         if (localB == null) {
-          final insertedId = await _db.businessDao.insertBusiness(
+          await _db.businessDao.insertBusiness(
             BusinessesCompanion.insert(
               id: Value(id),
               name: name,
@@ -40,7 +40,7 @@ class BusinessRepository {
               isActive: const Value(true),
             ),
           );
-          localB = await _db.businessDao.getBusinessById(insertedId);
+          localB = (await _db.businessDao.getAllBusinesses()).where((b) => b.id == id || b.name == name).firstOrNull;
         }
         firstBusiness ??= localB;
       }
