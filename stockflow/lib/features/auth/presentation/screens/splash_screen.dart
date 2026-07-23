@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../providers/app_providers.dart';
+import '../../../../repositories/business_repository.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -56,7 +57,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (setupDone && businessId != -1) {
       context.go('/sell');
     } else if (authState.isAuthenticated) {
-      context.go('/business-setup');
+      final repo = ref.read(businessRepositoryProvider);
+      final activeBusiness = await repo.syncFromServer();
+      if (!mounted) return;
+
+      if (activeBusiness != null) {
+        await prefs.setBool(AppConstants.keyBusinessSetupDone, true);
+        await prefs.setInt(AppConstants.keyBusinessId, activeBusiness.id);
+        ref.read(activeBusinessIdProvider.notifier).state = activeBusiness.id;
+        context.go('/sell');
+      } else {
+        context.go('/business-setup');
+      }
     } else {
       context.go('/welcome');
     }

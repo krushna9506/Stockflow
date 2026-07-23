@@ -9,12 +9,45 @@ class BusinessRepository {
   final AppDatabase _db;
   final BusinessApiService _api;
 
-  Future<void> syncFromServer() async {
+  Future<BusinessesData?> syncFromServer() async {
     try {
-      await _api.getBusinesses();
-      // Process remote businesses and merge them into local database
+      final remoteList = await _api.getBusinesses();
+      if (remoteList.isEmpty) return null;
+
+      BusinessesData? firstBusiness;
+      for (final item in remoteList) {
+        final name = item['name'] as String? ?? 'My Business';
+        final ownerName = item['owner_name'] as String? ?? 'Owner';
+        final phone = item['phone'] as String? ?? '';
+        final email = item['email'] as String?;
+        final address = item['address'] as String?;
+        final businessType = item['business_type'] as String? ?? 'General';
+        final id = item['id'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+
+        final existingList = await _db.businessDao.getAllBusinesses();
+        var localB = existingList.where((b) => b.id == id || b.name == name).firstOrNull;
+
+        if (localB == null) {
+          final insertedId = await _db.businessDao.insertBusiness(
+            BusinessesCompanion.insert(
+              id: Value(id),
+              name: name,
+              ownerName: ownerName,
+              phone: phone,
+              email: Value(email),
+              address: Value(address),
+              businessType: Value(businessType),
+              isActive: const Value(true),
+            ),
+          );
+          localB = await _db.businessDao.getBusinessById(insertedId);
+        }
+        firstBusiness ??= localB;
+      }
+      return firstBusiness ?? await getActiveBusiness();
     } catch (e) {
-      // If offline, just ignore and use local data
+      // If offline or error, use local active business
+      return getActiveBusiness();
     }
   }
 

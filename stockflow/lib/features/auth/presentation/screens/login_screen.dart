@@ -52,13 +52,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
 
       final repo = ref.read(businessRepositoryProvider);
-      final activeBusiness = await repo.getActiveBusiness();
+      // Sync cloud business & data for this account
+      final activeBusiness = await repo.syncFromServer();
       final prefs = ref.read(sharedPreferencesProvider);
       
       if (!mounted) return;
 
       if (activeBusiness != null) {
-        // Business already exists for this account, skip setup
+        // Business already exists for this account on cloud or local, skip setup
         await prefs.setBool(AppConstants.keyBusinessSetupDone, true);
         await prefs.setInt(AppConstants.keyBusinessId, activeBusiness.id);
         
@@ -67,7 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ref.read(activeBusinessIdProvider.notifier).state = activeBusiness.id;
         context.go('/sell');
       } else {
-        // No business found, proceed to setup
+        // Brand new account with no business anywhere, proceed to setup
         context.go('/business-setup');
       }
     } catch (e, stackTrace) {
