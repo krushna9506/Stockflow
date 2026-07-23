@@ -209,7 +209,7 @@ class ProfileScreen extends ConsumerWidget {
   Future<void> _restore(BuildContext context, WidgetRef ref) async {
     final notification = ref.read(notificationServiceProvider);
     try {
-      FilePickerResult? result = await FilePicker.pickFiles(
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.any, // Android/iOS restrict mime types for SQLite sometimes
         allowMultiple: false,
       );
