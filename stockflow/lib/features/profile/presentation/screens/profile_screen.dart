@@ -12,6 +12,7 @@ import '../../../../core/services/update_service.dart';
 import '../../../../providers/app_providers.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../shared/widgets/update_dialog.dart';
+import '../../../../shared/widgets/developer_license_dialog.dart';
 import '../../../dashboard/presentation/providers/dashboard_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -153,6 +154,15 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ],
 
+              // ── About & Licensing ──────────────────────────────────────────────
+              _SectionHeader('About & Developer License'),
+              _SettingsTile(
+                icon: Icons.help_outline,
+                title: 'Software License & Credentials',
+                subtitle: 'View Krushna Donge credentials, LinkedIn & Gmail',
+                onTap: () => showDeveloperLicenseDialog(context),
+              ),
+
               const SizedBox(height: 16),
 
               // ── Account ──────────────────────────────────────────────
@@ -169,48 +179,52 @@ class ProfileScreen extends ConsumerWidget {
 
               // Version & License Branding
               Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.4)),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.verified_user_outlined, size: 16, color: cs.primary),
-                          const SizedBox(width: 8),
-                          Text(
-                            'StockFlow v1.1.0 • Licensed Software',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: cs.onSurface,
+                child: InkWell(
+                  onTap: () => showDeveloperLicenseDialog(context),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.4)),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.verified_user_outlined, size: 16, color: cs.primary),
+                            const SizedBox(width: 8),
+                            Text(
+                              'StockFlow v1.1.0 • Licensed Software',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: cs.onSurface,
+                              ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Developed & Powered by Krushna Donge',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: cs.onSurfaceVariant,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Developed & Powered by Krushna',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: cs.onSurfaceVariant,
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'All Rights Reserved • Authorized Business Edition',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                        const SizedBox(height: 2),
+                        Text(
+                          'All Rights Reserved • Authorized Business Edition',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
