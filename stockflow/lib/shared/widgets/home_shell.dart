@@ -24,21 +24,7 @@ class HomeShell extends ConsumerWidget {
     ref.watch(syncManagerProvider);
 
     return Scaffold(
-      body: Column(
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 4, right: 12, bottom: 2),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: const ConnectivityBanner(),
-              ),
-            ),
-          ),
-          Expanded(child: child),
-        ],
-      ),
+      body: child,
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         height: 62,

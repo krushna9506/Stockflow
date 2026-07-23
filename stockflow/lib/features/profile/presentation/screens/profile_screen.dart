@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/connectivity_banner.dart';
 import '../../../../core/widgets/local_image_renderer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +29,10 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports & Settings'),
+        actions: const [
+          Center(child: ConnectivityBanner()),
+          SizedBox(width: 12),
+        ],
       ),
       body: ListView(
           padding: const EdgeInsets.all(16),

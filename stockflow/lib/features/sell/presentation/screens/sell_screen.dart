@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import '../../../../shared/widgets/connectivity_banner.dart';
 import '../../../../core/widgets/local_image_renderer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -160,6 +160,8 @@ class _SellScreenState extends ConsumerState<SellScreen> {
       appBar: AppBar(
         title: const Text('POS & Billing'),
         actions: [
+          const Center(child: ConnectivityBanner()),
+          const SizedBox(width: 8),
           if (_searchQuery.isNotEmpty ||
               _selectedCategoryId != null ||
               _stockFilter != StockFilterType.all)

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import '../../../../shared/widgets/connectivity_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -33,6 +33,8 @@ class _StockScreenState extends ConsumerState<StockScreen> {
       appBar: AppBar(
         title: const Text('Inventory'),
         actions: [
+          const Center(child: ConnectivityBanner()),
+          const SizedBox(width: 4),
           IconButton(
             icon: const Icon(Icons.category_outlined),
             tooltip: 'Categories',

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import '../../../../shared/widgets/connectivity_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/utils/formatters.dart';
@@ -77,6 +77,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 error: (_, __) => const Text('Smart Analytics & Insights'),
               ),
               actions: [
+                const Center(child: ConnectivityBanner()),
+                const SizedBox(width: 4),
                 IconButton(
                   icon: const Icon(Icons.refresh_outlined),
                   tooltip: 'Refresh Analytics',
