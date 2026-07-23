@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/services/update_service.dart';
+import '../../../../core/services/notification_service.dart';
+import '../../../../shared/widgets/update_dialog.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -70,6 +74,26 @@ class WelcomeScreen extends StatelessWidget {
                   child: Text(
                     'Continue Offline →',
                     style: TextStyle(color: cs.primary),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextButton.icon(
+                  onPressed: () async {
+                    final notification = ref.read(notificationServiceProvider);
+                    notification.showInfo('Checking for app updates...');
+                    final updateInfo = await ref.read(updateServiceProvider).checkForUpdates();
+                    if (context.mounted) {
+                      if (updateInfo.isUpdateAvailable) {
+                        showUpdateDialogIfAvailable(context, updateInfo);
+                      } else {
+                        notification.showInfo('Your app is up to date.');
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.system_update_outlined, size: 16),
+                  label: const Text(
+                    'Check for App Updates',
+                    style: TextStyle(fontSize: 12),
                   ),
                 ),
               ],

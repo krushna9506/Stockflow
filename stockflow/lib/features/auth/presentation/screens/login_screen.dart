@@ -7,6 +7,9 @@ import '../../../../providers/app_providers.dart';
 import '../../../../repositories/business_repository.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/services/update_service.dart';
+import '../../../../core/services/notification_service.dart';
+import '../../../../shared/widgets/update_dialog.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 
@@ -168,6 +171,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               TextButton(
                 onPressed: () => context.go('/business-setup'),
                 child: const Text('Continue Offline'),
+              ),
+              const SizedBox(height: 12),
+              Center(
+                child: TextButton.icon(
+                  onPressed: () async {
+                    final notification = ref.read(notificationServiceProvider);
+                    notification.showInfo('Checking for app updates...');
+                    final updateInfo = await ref.read(updateServiceProvider).checkForUpdates();
+                    if (context.mounted) {
+                      if (updateInfo.isUpdateAvailable) {
+                        showUpdateDialogIfAvailable(context, updateInfo);
+                      } else {
+                        notification.showInfo('Your app is up to date.');
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.system_update_outlined, size: 16),
+                  label: const Text(
+                    'Check for App Updates',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
               ),
             ],
           ),
